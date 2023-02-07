@@ -5,15 +5,27 @@ import ContactsList from './ContactsList/ContactsList';
 import ContactFilter from './ContactFilter/ContactFilter';
 import ContactForm from './ContactForm/ContactForm';
 
-import items from './items';
-
 import styles from './phoneBooks.module.css';
 
 class PhoneBook extends Component {
   state = {
-    contacts: [...items],
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem('phone-book'));
+    if (contacts?.length) {
+      this.setState({ contacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    if (prevState.contacts.length !== contacts.length) {
+      localStorage.setItem('phone-book', JSON.stringify(contacts));
+    }
+  }
 
   removeContact = id => {
     this.setState(({ contacts }) => {
@@ -23,7 +35,6 @@ class PhoneBook extends Component {
   };
 
   addContact = ({ name, number }) => {
-    // const { name, number, contacts } = this.state;
     if (this.isDublicate(name, number)) {
       return alert(`${name} is already in contacts`);
     }
@@ -34,7 +45,9 @@ class PhoneBook extends Component {
         name,
         number,
       };
-      return { contacts: [newContact, ...contacts] };
+      return {
+        contacts: [newContact, ...contacts],
+      };
     });
   };
 

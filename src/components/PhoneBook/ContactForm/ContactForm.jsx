@@ -8,15 +8,6 @@ import styles from './contactForm.module.css';
 class ContactForm extends Component {
   state = { ...initialState };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    const { onSubmit } = this.props;
-    const result = onSubmit({ ...this.state });
-    if (result) {
-      this.reset();
-    }
-  };
-
   reset() {
     this.setState({ ...initialState });
   }
@@ -24,6 +15,13 @@ class ContactForm extends Component {
   handleChange = ({ target }) => {
     const { name, number, value } = target;
     this.setState({ [name]: value, [number]: value });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const { onSubmit } = this.props;
+    onSubmit({ ...this.state });
+    this.reset();
   };
 
   render() {
@@ -48,7 +46,7 @@ class ContactForm extends Component {
             type="tel"
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            placeholder="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
           />
         </div>
